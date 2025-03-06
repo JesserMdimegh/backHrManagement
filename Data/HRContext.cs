@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Back_HR.Models
 {
-    public class HRContext : DbContext
+    public class HRContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public HRContext(DbContextOptions<HRContext> options) : base(options)
         {
         }
 
-        // DbSets for all entities (English names)
+        // DbSets for all entities
         public DbSet<User> Users { get; set; }
         public DbSet<Candidat> Candidates { get; set; }
         public DbSet<Employe> Employees { get; set; }
@@ -19,9 +21,13 @@ namespace Back_HR.Models
         public DbSet<Survey> Surveys { get; set; }
         public DbSet<SurveyResponse> SurveyResponses { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<RevokedToken> RevokedTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Required for IdentityDbContext
+            base.OnModelCreating(modelBuilder);
+
             // Configure TPT for User inheritance (separate tables for each type)
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Candidat>().ToTable("Candidates");
@@ -39,7 +45,6 @@ namespace Back_HR.Models
             modelBuilder.Entity<Survey>().Property(s => s.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<SurveyResponse>().Property(sr => sr.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<Application>().Property(a => a.Id).HasDefaultValueSql("NEWID()");
-
 
             // Configure many-to-many between Candidate and Skill
             modelBuilder.Entity<Candidat>()
