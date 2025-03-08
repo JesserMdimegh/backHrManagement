@@ -1,4 +1,4 @@
-﻿namespace Back_HR.Models
+﻿namespace Back_HR.DTOs
 {
     public class LoginModel
     {

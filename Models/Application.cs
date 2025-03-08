@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Back_HR.Models.enums;
 
 namespace Back_HR.Models
 {
@@ -7,7 +8,7 @@ namespace Back_HR.Models
         [Key]
         public Guid Id { get; set; }
         public DateTime ApplicationDate { get; set; } = DateTime.Now; // When the application was submitted
-        public string Status { get; set; } = "PENDING"; // E.g., PENDING, ACCEPTED, REJECTED
+        public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 
         // Foreign key to Candidate
         public Guid CandidateId { get; set; }

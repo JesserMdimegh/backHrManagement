@@ -1,4 +1,6 @@
-﻿namespace Back_HR.Models
+﻿using Back_HR.Models;
+
+namespace Back_HR.DTOs
 {
     public class RegisterModel
     {
@@ -7,8 +9,8 @@
         public string Email { get; set; }
         public string Password { get; set; }
         public string Telephone { get; set; }
-        public string UserType { get; set; } // "RH", "Employe", "Candidat"
-        public string? Poste { get; set; } // For Employe
+
+        public List<Competence> Competences { get; set; }
         public string? Cv { get; set; }
     }
 }

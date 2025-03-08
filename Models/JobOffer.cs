@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Back_HR.Models.enums;
 
 namespace Back_HR.Models
 {
@@ -9,7 +10,10 @@ namespace Back_HR.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime PublishDate { get; set; }
-        public string Status { get; set; }
+        public int Experience { get; set; }
+        public Double Salary { get; set; }
+        public String Location { get; set; }
+        public OffreStatus Status { get; set; } = OffreStatus.OPEN;
 
         // 1-to-1 with RH (HR manages this offer)
         public Guid RHId { get; set; }
