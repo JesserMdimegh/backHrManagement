@@ -114,7 +114,8 @@ namespace Back_HR.Controllers.AuthController
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("UserType", user.UserType.ToString())
+                new Claim("UserType", user.UserType.ToString()),
+                new Claim("Identifier",user.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

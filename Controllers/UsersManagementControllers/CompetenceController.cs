@@ -50,5 +50,7 @@ namespace Back_HR.Controllers.UsersManagementControllers
 
             return CreatedAtAction(nameof(GetCompetences), new { id = competence.Id }, competenceDto);
         }
+
+       
     }
 }

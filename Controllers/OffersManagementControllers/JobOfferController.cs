@@ -4,9 +4,9 @@ using Back_HR.DTOs;
 using Back_HR.Models;
 using Back_HR.Models.enums;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Back_HR.Controllers.OffersManagementControllers
 {
@@ -34,7 +34,6 @@ namespace Back_HR.Controllers.OffersManagementControllers
                 return BadRequest(ModelState);
             }
             var email = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-            Console.WriteLine($"Extracted email (sub): {email ?? "null"}");
             if (string.IsNullOrEmpty(email))
             {
                 return Unauthorized("Unable to identify user.");
@@ -69,5 +68,142 @@ namespace Back_HR.Controllers.OffersManagementControllers
 
             return Ok(new { Message = "Job offer created successfully", JobOfferId = jobOffer.Id });
         }
+
+
+
+        [HttpGet("by-rh/{rhId}")]
+        [Authorize(Policy = "RHOnly")]
+        public async Task<IActionResult> GetOffersByRHId(Guid rhId)
+        {
+            // Optional: Verify the RH user exists
+            var rhUser = await _userManager.Users.OfType<RH>().FirstOrDefaultAsync(u => u.Id == rhId);
+            if (rhUser == null)
+            {
+                return NotFound($"No RH user found with ID {rhId}.");
+            }
+
+            var offers = await _context.JobOffers
+                .Where(jo => jo.RHId == rhId)
+                .Select(jo => new JobOfferDtoGet
+                {
+                    Id = jo.Id,
+                    Title = jo.Title,
+                    Description = jo.Description,
+                    Experience = jo.Experience,
+                    Salary = jo.Salary,
+                    Location = jo.Location,
+                    PublishDate = jo.PublishDate,
+                    Status = jo.Status,
+                    Competences = jo.Competences
+                })
+                .ToListAsync();
+
+            if (!offers.Any())
+            {
+                return Ok(new List<JobOfferDtoGet>()); 
+            }
+
+            return Ok(offers);
+        }
+
+        private async Task<Competence?> GetCompetenceByTitre(string titre)
+        {
+            if (string.IsNullOrEmpty(titre))
+            {
+                return null;
+            }
+
+            return await _context.Competences
+                .FirstOrDefaultAsync(c => c.Titre.ToLower() == titre.ToLower());
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = "RHOnly")]
+        public async Task<IActionResult> GetOfferById(Guid id)
+        {
+            var offer = await _context.JobOffers
+                .Where(jo => jo.Id == id)
+                .Select(jo => new JobOfferDtoGet
+                {
+                    Id = jo.Id,
+                    Title = jo.Title,
+                    Description = jo.Description,
+                    Experience = jo.Experience,
+                    Salary = jo.Salary,
+                    Location = jo.Location,
+                    PublishDate = jo.PublishDate,
+                    Status = jo.Status,
+                    Competences = jo.Competences
+                })
+                .FirstOrDefaultAsync();
+
+            if (offer == null)
+            {
+                return NotFound($"No job offer found with ID {id}.");
+            }
+
+            return Ok(offer);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllOffers()
+        {
+            var offers = await _context.JobOffers
+                .Select(jo => new JobOfferDtoGet
+                {
+                    Id = jo.Id,
+                    Title = jo.Title,
+                    Description = jo.Description,
+                    Experience = jo.Experience,
+                    Salary = jo.Salary,
+                    Location = jo.Location,
+                    PublishDate = jo.PublishDate,
+                    Status = jo.Status,
+                    Competences = jo.Competences
+                })
+                .ToListAsync();
+
+            return Ok(offers);
+        }
+
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "RHOnly")]
+        public async Task<IActionResult> DeleteOffer(Guid id)
+        {
+            var email = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized("Unable to identify user.");
+            }
+
+            var rhUser = await _userManager.FindByEmailAsync(email) as RH;
+            if (rhUser == null)
+            {
+                return Unauthorized("RH user not found.");
+            }
+
+            var offer = await _context.JobOffers
+                .FirstOrDefaultAsync(jo => jo.Id == id);
+
+            if (offer == null)
+            {
+                return NotFound($"No job offer found with ID {id}.");
+            }
+
+
+            if (offer.RHId != rhUser.Id)
+            {
+                return Forbid("You can only delete job offers you created.");
+            }
+
+
+            _context.JobOffers.Remove(offer);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Job offer deleted successfully", JobOfferId = id });
+        }
     }
 }
+

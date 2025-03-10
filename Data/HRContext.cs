@@ -46,6 +46,10 @@ namespace Back_HR.Models
             modelBuilder.Entity<SurveyResponse>().Property(sr => sr.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<Application>().Property(a => a.Id).HasDefaultValueSql("NEWID()");
 
+            modelBuilder.Entity<User>()
+            .Property(u => u.UserType)
+            .HasConversion<int>();
+
             // Configure many-to-many between Candidate and Skill
             modelBuilder.Entity<Candidat>()
                 .HasMany(c => c.Competences)

@@ -7,7 +7,7 @@ namespace Back_HR.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public DateTime ApplicationDate { get; set; } = DateTime.Now; // When the application was submitted
+        public DateTime ApplicationDate { get; set; } = DateTime.Now;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.PENDING;
 
         // Foreign key to Candidate
@@ -17,5 +17,7 @@ namespace Back_HR.Models
         // Foreign key to JobOffer
         public Guid JobOfferId { get; set; }
         public JobOffer JobOffer { get; set; }
+
+        public string Cv { get; set; }
     }
 }

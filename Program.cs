@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Back_HR.Models;
+using Back_HR.Models.enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,88 +12,10 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular", policy =>
-    {
-        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-    });
-});
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Add DbContext
-builder.Services.AddDbContext<HRContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
-
-// Add Identity
-builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = false;
-})
-.AddEntityFrameworkStores<HRContext>()
-.AddDefaultTokenProviders();
-
-
-// Add JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-    options.Events = new JwtBearerEvents
-    {
-        OnTokenValidated = async context =>
-        {
-            var dbContext = context.HttpContext.RequestServices.GetRequiredService<HRContext>();
-            var tokenString = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            if (string.IsNullOrEmpty(tokenString))
-            {
-                context.Fail("No token provided");
-                return;
-            }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            if (!tokenHandler.CanReadToken(tokenString))
-            {
-                context.Fail("Invalid token format");
-                return;
-            }
-
-            var jwtToken = tokenHandler.ReadJwtToken(tokenString);
-            if (await dbContext.RevokedTokens.AnyAsync(bt => bt.Token == tokenString))
-            {
-                context.Fail("Token is blacklisted");
-            }
-        }
-    };
-});
-
+// Configure Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -101,7 +25,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for managing HR operations including authentication, job offers, and surveys."
     });
 
-    // Add JWT Authentication support in Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -128,42 +51,127 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
+// Add DbContext
+builder.Services.AddDbContext<HRContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add Identity
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<HRContext>()
+.AddDefaultTokenProviders();
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+    options.MapInboundClaims = false;
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var dbContext = context.HttpContext.RequestServices.GetRequiredService<HRContext>();
+            var tokenString = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(tokenString))
+            {
+                context.Fail("No token provided");
+                return;
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (!tokenHandler.CanReadToken(tokenString))
+            {
+                context.Fail("Invalid token format");
+                return;
+            }
+
+            var jwtToken = tokenHandler.ReadJwtToken(tokenString);
+            if (await dbContext.RevokedTokens.AnyAsync(bt => bt.Token == tokenString))
+            {
+                context.Fail("Token is revoked");
+            }
+        },
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
+    };
+});
 
 // Add Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RHOnly", policy =>
-        policy.RequireClaim("UserType", "RH"));
-    options.AddPolicy("EmployeOnly", policy =>
-        policy.RequireClaim("UserType", "Employe"));
-    options.AddPolicy("CandidatOnly", policy =>
-        policy.RequireClaim("UserType", "Candidat"));
+    options.AddPolicy("RHOnly", policy => policy.RequireClaim("UserType", UserType.RH.ToString()));
+    options.AddPolicy("EmployeOnly", policy => policy.RequireClaim("UserType", UserType.EMPLOYE.ToString()));
+    options.AddPolicy("CandidatOnly", policy => policy.RequireClaim("UserType", UserType.CANDIDAT.ToString()));
 });
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Add Swagger middleware
+// Seed roles
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    string[] roleNames = { "RH", "Employe", "Candidat" };
+
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole<Guid>
+            {
+                Id = Guid.NewGuid(),
+                Name = roleName,
+                NormalizedName = roleName.ToUpper()
+            });
+        }
+    }
+}
+
+// Configure the HTTP request pipeline
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR API v1");
-    c.RoutePrefix = string.Empty; // Makes Swagger UI available at root (e.g., https://localhost:5096/)
+    c.RoutePrefix = string.Empty; 
 });
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseCors("AllowAngular");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
