@@ -103,7 +103,7 @@ namespace Back_HR.Controllers.AuthController
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var token = GenerateJwtToken(user);
-                return Ok(new { Token = token });
+                return Ok(new { Token = token ,user=user });
             }
             return Unauthorized("Invalid credentials");
         }
