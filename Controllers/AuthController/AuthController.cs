@@ -28,9 +28,41 @@ namespace Back_HR.Controllers.AuthController
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromForm] RegisterModel model)
         {
+            Console.WriteLine("Registering user*************************");
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // Handle CV file upload
+            string? cvPath = null;
+            if (model.CvFile != null && model.CvFile.Length > 0)
+            {
+                // Ensure the file is a PDF
+                if (model.CvFile.ContentType != "application/pdf")
+                {
+                    return BadRequest("Only PDF files are allowed for CV upload.");
+                }
+
+                // Define the storage path (e.g., wwwroot/uploads/cvs/)
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/cvs");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Generate a unique file name to avoid overwriting
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.CvFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Save the file to the server
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.CvFile.CopyToAsync(fileStream);
+                }
+
+                // Store the relative path or URL in the database
+                cvPath = $"/uploads/cvs/{uniqueFileName}";
+            }
 
             var user = new Candidat
             {
@@ -39,7 +71,7 @@ namespace Back_HR.Controllers.AuthController
                 Telephone = model.Telephone,
                 Email = model.Email,
                 UserName = model.Email,
-                Cv = model.Cv,
+                Cv = cvPath,
                 UserType = UserType.CANDIDAT
             };
 
@@ -85,7 +117,7 @@ namespace Back_HR.Controllers.AuthController
             // Add the role
             await _userManager.AddToRoleAsync(user, user.UserType.ToString());
 
-            // Add UserType claim (for your policy)
+            // Add UserType claim 
             await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("UserType", user.UserType.ToString()));
 
             // Generate JWT token
@@ -94,7 +126,7 @@ namespace Back_HR.Controllers.AuthController
             // Save changes to persist the many-to-many relationship
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "User created successfully", Token = token });
+            return Ok(new { Message = "User created successfully", Token = token , user = user });
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -103,7 +135,7 @@ namespace Back_HR.Controllers.AuthController
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var token = GenerateJwtToken(user);
-                return Ok(new { Token = token ,user=user });
+                return Ok(new { Token = token , user });
             }
             return Unauthorized("Invalid credentials");
         }

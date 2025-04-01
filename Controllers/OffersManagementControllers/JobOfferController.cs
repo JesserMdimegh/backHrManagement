@@ -59,14 +59,35 @@ namespace Back_HR.Controllers.OffersManagementControllers
                 Status = OffreStatus.OPEN, 
                 RHId = rhUser.Id,           
                 RHResponsable = rhUser,    
-                Competences = dto.Competences ?? new List<Competence>() 
+                Competences = new List<Competence>() 
             };
+
+            if (dto.Competences != null && dto.Competences.Any())
+            {
+                foreach (var competence in dto.Competences)
+                {
+                    // Check if the competence already exists in the database
+                    var existingCompetence = await _context.Competences
+                        .FirstOrDefaultAsync(c => c.Id == competence.Id);
+
+                    if (existingCompetence != null)
+                    {
+                        // If it exists, attach it to the JobOffer
+                        jobOffer.Competences.Add(existingCompetence);
+                    }
+                    else
+                    {
+                        // If it doesn’t exist, treat it as a new competence
+                        jobOffer.Competences.Add(competence);
+                    }
+                }
+            }
 
             // Add to database
             _context.JobOffers.Add(jobOffer);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Job offer created successfully", JobOfferId = jobOffer.Id });
+            return Ok(new { Message = "Job offer created successfully", JobOffer = jobOffer });
         }
 
 

@@ -8,11 +8,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    }); ;
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger/OpenAPI
@@ -49,6 +54,7 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+    c.OperationFilter<JsonResponseOperationFilter>();
 });
 
 // Add CORS
@@ -56,12 +62,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://localhost:5096")
+        policy.WithOrigins("http://localhost:4200")
               .AllowAnyMethod()
-              .AllowAnyHeader()
-             .AllowCredentials();
-
-             
+              .AllowAnyHeader();
     });
 });
 
@@ -167,15 +170,72 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR API v1");
-    c.RoutePrefix = string.Empty; 
+    c.RoutePrefix = string.Empty;
 });
 
 app.UseCors("AllowAngular");
 
+app.UseHttpsRedirection();
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+
+// Custom Operation Filter to enforce JSON responses
+public class JsonResponseOperationFilter : IOperationFilter
+{
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        // Remove non-JSON content types from responses
+        foreach (var response in operation.Responses)
+        {
+            var content = response.Value.Content;
+            if (content != null)
+            {
+                var contentTypesToRemove = content.Keys
+                    .Where(k => k != "application/json")
+                    .ToList();
+                foreach (var key in contentTypesToRemove)
+                {
+                    content.Remove(key);
+                }
+
+                // Ensure application/json exists
+                if (!content.ContainsKey("application/json"))
+                {
+                    content["application/json"] = new OpenApiMediaType
+                    {
+                        Schema = content.FirstOrDefault().Value?.Schema ?? new OpenApiSchema { Type = "string" }
+                    };
+                }
+            }
+            else
+            {
+                response.Value.Content = new Dictionary<string, OpenApiMediaType>
+                {
+                    ["application/json"] = new OpenApiMediaType
+                    {
+                        Schema = new OpenApiSchema { Type = "string" }
+                    }
+                };
+            }
+        }
+
+        // Ensure request bodies only use application/json
+        if (operation.RequestBody?.Content != null)
+        {
+            var requestContent = operation.RequestBody.Content;
+            var contentTypesToRemove = requestContent.Keys
+                .Where(k => k != "application/json")
+                .ToList();
+            foreach (var key in contentTypesToRemove)
+            {
+                requestContent.Remove(key);
+            }
+        }
+    }
+}

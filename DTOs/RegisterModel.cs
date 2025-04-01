@@ -11,6 +11,6 @@ namespace Back_HR.DTOs
         public string Telephone { get; set; }
 
         public List<Competence> Competences { get; set; }
-        public string? Cv { get; set; }
+        public IFormFile? CvFile { get; set; }
     }
 }
