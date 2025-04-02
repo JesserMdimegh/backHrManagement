@@ -7,6 +7,8 @@ using Back_HR.DTOs;
 using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using Back_HR.Models.enums;
+using System.IO;
+using System.Text.Json;
 
 namespace Back_HR.Controllers.OffersManagementControllers
 {
@@ -25,11 +27,39 @@ namespace Back_HR.Controllers.OffersManagementControllers
 
         [HttpPost("apply")]
         [Authorize(Policy = "CandidatOnly")]
-        public async Task<IActionResult> ApplyForJobOffer([FromBody] ApplicationDtoPost dto)
+        public async Task<IActionResult> ApplyForJobOffer([FromForm] ApplicationDtoPost dto)
         {
-            if (!ModelState.IsValid)
+            string json = JsonSerializer.Serialize(dto);
+            Console.WriteLine($"Received DTO: {json}");
+            if (!ModelState.IsValid)return BadRequest(ModelState);
+            string? cvPath = null;
+            if (dto.Cv != null && dto.Cv.Length > 0)
             {
-                return BadRequest(ModelState);
+                // Ensure the file is a PDF
+                if (dto.Cv.ContentType != "application/pdf")
+                {
+                    return BadRequest("Only PDF files are allowed for CV upload.");
+                }
+
+                // Define the storage path (e.g., wwwroot/uploads/cvs/)
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/cvs");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Generate a unique file name to avoid overwriting
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.Cv.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Save the file to the server
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.Cv.CopyToAsync(fileStream);
+                }
+
+                // Store the relative path or URL in the database
+                cvPath = $"/uploads/cvs/{uniqueFileName}";
             }
 
             // Get the authenticated user's email from the JWT
@@ -38,7 +68,6 @@ namespace Back_HR.Controllers.OffersManagementControllers
             {
                 return Unauthorized("Unable to identify user.");
             }
-
             // Find the candidate user
             var candidate = await _userManager.FindByEmailAsync(email) as Candidat;
             if (candidate == null)
@@ -49,6 +78,8 @@ namespace Back_HR.Controllers.OffersManagementControllers
             // Ensure the CandidatId matches the authenticated user
             if (dto.CandidatId != candidate.Id)
             {
+                Console.WriteLine(dto.JobOfferId + "*****************************************ya zeby****");
+                Console.WriteLine(dto.ToString + "*****************************************ya zeby****");
                 return Forbid("You can only apply for yourself.");
             }
 
@@ -78,7 +109,7 @@ namespace Back_HR.Controllers.OffersManagementControllers
                 Id = Guid.NewGuid(),
                 CandidateId = dto.CandidatId,
                 JobOfferId = dto.JobOfferId,
-                Cv = dto.Cv,
+                Cv = cvPath,
                 Status = ApplicationStatus.PENDING,
                 ApplicationDate = DateTime.Now
             };

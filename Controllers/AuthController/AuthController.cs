@@ -30,7 +30,6 @@ namespace Back_HR.Controllers.AuthController
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterModel model)
         {
-            Console.WriteLine("Registering user*************************");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // Handle CV file upload
