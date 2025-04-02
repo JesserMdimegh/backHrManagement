@@ -87,7 +87,7 @@ namespace Back_HR.Controllers.OffersManagementControllers
             _context.JobOffers.Add(jobOffer);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "Job offer created successfully", JobOffer = jobOffer });
+            return Ok(new { Message = "Job offer created successfully"});
         }
 
 
