@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Back-HR.props" />
+</Project>
