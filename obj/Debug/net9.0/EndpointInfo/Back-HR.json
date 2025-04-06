@@ -12,13 +12,7 @@
           "Application"
         ],
         "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplicationDtoPost"
-              }
-            }
-          }
+          "content": { }
         },
         "responses": {
           "200": {
@@ -289,6 +283,34 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -720,24 +742,6 @@
   },
   "components": {
     "schemas": {
-      "ApplicationDtoPost": {
-        "type": "object",
-        "properties": {
-          "CandidatId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "JobOfferId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "Cv": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CandidatDTO": {
         "type": "object",
         "properties": {
@@ -769,6 +773,16 @@
             "nullable": true
           },
           "Cv": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChatRequest": {
+        "type": "object",
+        "properties": {
+          "Message": {
             "type": "string",
             "nullable": true
           }

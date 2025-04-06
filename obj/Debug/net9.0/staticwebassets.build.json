@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "7tmnQsLcixqH+EO5aDsfe/rsxSnh5aVTAwLvgpQz1iU=",
+  "Hash": "zixvrsarKYwxFcSZ99fD91D4ZUtFkDrrH7yi9Vb/FAg=",
   "Source": "Back-HR",
   "BasePath": "_content/Back-HR",
   "Mode": "Default",
@@ -16,6 +16,27 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\01437b79-fd69-4526-b0a2-a764642cdf54.pdf",
+      "SourceId": "Back-HR",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\",
+      "BasePath": "_content/Back-HR",
+      "RelativePath": "uploads/cvs/01437b79-fd69-4526-b0a2-a764642cdf54#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rbtxpa8n3w",
+      "Integrity": "t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\cvs\\01437b79-fd69-4526-b0a2-a764642cdf54.pdf"
+    },
     {
       "Identity": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\0d5c22a9-4b82-4aab-9418-be996e4a32da.pdf",
       "SourceId": "Back-HR",
@@ -99,6 +120,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\cvs\\7f112557-1188-4b10-9a40-94d38fcd5e0c.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf",
+      "SourceId": "Back-HR",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\",
+      "BasePath": "_content/Back-HR",
+      "RelativePath": "uploads/cvs/a3361d40-c10c-4c11-a244-43eaba8eff8a#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "q2hw4mxwv6",
+      "Integrity": "jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\cvs\\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf"
     },
     {
       "Identity": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\ba6ce7be-2e66-471a-b58f-8bc4ccaffbfd.pdf",
@@ -207,6 +249,88 @@
     }
   ],
   "Endpoints": [
+    {
+      "Route": "uploads/cvs/01437b79-fd69-4526-b0a2-a764642cdf54.pdf",
+      "AssetFile": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\01437b79-fd69-4526-b0a2-a764642cdf54.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2767"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 12:07:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/cvs/01437b79-fd69-4526-b0a2-a764642cdf54.rbtxpa8n3w.pdf",
+      "AssetFile": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\01437b79-fd69-4526-b0a2-a764642cdf54.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2767"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 12:07:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rbtxpa8n3w"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/cvs/01437b79-fd69-4526-b0a2-a764642cdf54.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc="
+        }
+      ]
+    },
     {
       "Route": "uploads/cvs/0d5c22a9-4b82-4aab-9418-be996e4a32da.pdf",
       "AssetFile": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\0d5c22a9-4b82-4aab-9418-be996e4a32da.pdf",
@@ -532,6 +656,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/cvs/a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf",
+      "AssetFile": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3047"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 11:40:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/cvs/a3361d40-c10c-4c11-a244-43eaba8eff8a.q2hw4mxwv6.pdf",
+      "AssetFile": "C:\\Users\\mazen\\Jesser Projet\\backHrApp\\latest0204\\back-hr\\wwwroot\\uploads\\cvs\\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3047"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 05 Apr 2025 11:40:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "q2hw4mxwv6"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/cvs/a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4="
         }
       ]
     },

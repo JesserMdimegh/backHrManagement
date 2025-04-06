@@ -1,5 +1,23 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\01437b79-fd69-4526-b0a2-a764642cdf54.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Back-HR</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Back-HR</BasePath>
+      <RelativePath>uploads/cvs/01437b79-fd69-4526-b0a2-a764642cdf54.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>rbtxpa8n3w</Fingerprint>
+      <Integrity>t3NmaWYcIgYSKGkfAoHsCJWVQShHFKm/MfA8u+Z8bTc=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\01437b79-fd69-4526-b0a2-a764642cdf54.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\0d5c22a9-4b82-4aab-9418-be996e4a32da.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>Back-HR</SourceId>
@@ -71,6 +89,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\7f112557-1188-4b10-9a40-94d38fcd5e0c.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Back-HR</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Back-HR</BasePath>
+      <RelativePath>uploads/cvs/a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>q2hw4mxwv6</Fingerprint>
+      <Integrity>jjWoDSXG9lDN+RGLLHVT3pT4GcDP8w+PaQ3vOw/eMF4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\a3361d40-c10c-4c11-a244-43eaba8eff8a.pdf'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\cvs\ba6ce7be-2e66-471a-b58f-8bc4ccaffbfd.pdf'))">
       <SourceType>Package</SourceType>

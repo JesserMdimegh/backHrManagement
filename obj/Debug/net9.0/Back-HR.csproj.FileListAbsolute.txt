@@ -291,3 +291,6 @@ C:\Users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\UglyT
 C:\Users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\UglyToad.PdfPig.Fonts.dll
 C:\Users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\UglyToad.PdfPig.Tokenization.dll
 C:\Users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\UglyToad.PdfPig.Tokens.dll
+C:\Users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\System.Formats.Asn1.dll
+C:\users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\package-lock.json
+C:\users\mazen\Jesser Projet\backHrApp\latest0204\back-hr\bin\Debug\net9.0\package.json

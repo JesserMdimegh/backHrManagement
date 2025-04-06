@@ -56,9 +56,19 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "Back_HR.DTOs.ApplicationDtoPost",
-        "IsRequired": true
+        "Name": "CandidatId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "JobOfferId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "Cv",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -208,6 +218,22 @@
       {
         "Name": "id",
         "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Back_HR.Controllers.chatbot.ChatController",
+    "Method": "Post",
+    "RelativePath": "api/chat",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Back_HR.Controllers.chatbot.ChatRequest",
         "IsRequired": true
       }
     ],
