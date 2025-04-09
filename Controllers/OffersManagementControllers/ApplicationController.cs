@@ -25,7 +25,7 @@ namespace Back_HR.Controllers.OffersManagementControllers
             _userManager = userManager;
         }
 
-        [HttpPost("apply")]
+        /*[HttpPost("apply")]
         [Authorize(Policy = "CandidatOnly")]
         public async Task<IActionResult> ApplyForJobOffer([FromForm] ApplicationDtoPost dto)
         {
@@ -263,6 +263,6 @@ namespace Back_HR.Controllers.OffersManagementControllers
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "Application rejected successfully", ApplicationId = applicationId });
-        }
+        }*/
     }
 }

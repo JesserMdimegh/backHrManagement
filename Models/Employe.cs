@@ -6,7 +6,7 @@ namespace Back_HR.Models
     {
         // Position/Role Information
         public string Poste { get; set; }
-        public string Department { get; set; }
+        public string? Department { get; set; }
         public DateTime HireDate { get; set; } = DateTime.UtcNow;
 
         // Performance Tracking

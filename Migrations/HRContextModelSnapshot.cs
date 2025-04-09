@@ -180,6 +180,9 @@ namespace Back_HR.Migrations
                     b.Property<int>("Absences")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClientSatisfactionScore")
+                        .HasColumnType("int");
+
                     b.Property<int>("CommunicationScore")
                         .HasColumnType("int");
 
@@ -583,7 +586,6 @@ namespace Back_HR.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("HireDate")

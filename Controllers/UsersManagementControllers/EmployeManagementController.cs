@@ -28,16 +28,14 @@ public class EmployeManagementController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<EmployeDTO>> PostEmployee([FromBody] CreateEmployeDTO createEmployeDto)
     {
-        // Validate model
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        // Check if email is already in use
         if (await _userManager.FindByEmailAsync(createEmployeDto.Email) != null)
         {
-            return BadRequest("Email is already in use.");
+            return BadRequest(new { Message = "Email is already in use." });
         }
 
         var employee = new Employe
@@ -48,21 +46,19 @@ public class EmployeManagementController : ControllerBase
             Telephone = createEmployeDto.Telephone,
             Email = createEmployeDto.Email,
             UserName = createEmployeDto.Email,
-            UserType = UserType.EMPLOYE, // Set the user type
+            UserType = UserType.EMPLOYE,
             Poste = createEmployeDto.Poste,
-            EmailConfirmed = true // You might want to set this based on your workflow
+            Department = createEmployeDto.Department, // Add this to your DTO
+            HireDate = DateTime.UtcNow, // Explicitly set
+            EmailConfirmed = true
         };
 
-        // Create the user with a temporary password
         var result = await _userManager.CreateAsync(employee, createEmployeDto.TemporaryPassword);
 
         if (!result.Succeeded)
         {
-            return BadRequest(result.Errors);
+            return BadRequest(new { Errors = result.Errors.Select(e => e.Description) });
         }
-
-        // Optionally add to role if needed
-        // await _userManager.AddToRoleAsync(employee, "Employee");
 
         var createdEmployeDto = new EmployeDTO
         {
@@ -71,7 +67,8 @@ public class EmployeManagementController : ControllerBase
             Firstname = employee.Firstname,
             Telephone = employee.Telephone,
             Email = employee.Email,
-            Poste = employee.Poste
+            Poste = employee.Poste,
+            Department = employee.Department
         };
 
         return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, createdEmployeDto);
@@ -90,7 +87,8 @@ public class EmployeManagementController : ControllerBase
                 Firstname = e.Firstname,
                 Telephone = e.Telephone,
                 Email = e.Email,
-                Poste = e.Poste
+                Poste = e.Poste,
+                Department = e.Department
             })
             .ToListAsync();
         return Ok(employees);
@@ -113,6 +111,7 @@ public class EmployeManagementController : ControllerBase
             Firstname = employee.Firstname,
             Telephone = employee.Telephone,
             Email = employee.Email,
+            Department=employee.Department,
             Poste = employee.Poste
         };
         return Ok(employeDto);
@@ -132,6 +131,7 @@ public class EmployeManagementController : ControllerBase
         employee.Firstname = updateEmployeDto.Firstname;
         employee.Telephone = updateEmployeDto.Telephone;
         employee.Poste = updateEmployeDto.Poste;
+        employee.Department = updateEmployeDto.Department;
 
         // Only update email if it's different
         if (employee.Email != updateEmployeDto.Email)
@@ -183,6 +183,7 @@ public class CreateEmployeDTO
     [Required]
     [EmailAddress]
     public string Email { get; set; }
+    public string Department { get; set; }
 
     [Required]
     public string Poste { get; set; }
@@ -206,7 +207,8 @@ public class UpdateEmployeDTO
 
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } 
+    public string Department { get; set; }
 
     [Required]
     public string Poste { get; set; }
