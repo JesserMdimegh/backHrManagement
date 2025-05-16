@@ -1,22 +1,54 @@
-version: 0.2
+ersion: 0.2
 
 phases:
   install:
+    runtime-versions:
+      dotnet: 8.0
     commands:
-      - echo "🔧 Installing .NET 9 SDK (latest preview)..."
-      - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
-      - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.100-preview.4
-      - export DOTNET_ROOT=$HOME/.dotnet
-      - export PATH=$DOTNET_ROOT:$PATH
-      - dotnet --info
+      # Install any dependencies needed for build
+      - echo Installing dependencies...
+      - dotnet restore
 
+  pre_build:
+    commands:
+      # Run tests if you have any
+      - echo Running tests...
+      - dotnet test --configuration Release
   build:
     commands:
-      - echo "🚀 Building the .NET project..."
-      - dotnet build YourProject.sln --configuration Release
+      # Build the application
+      - echo Building the application...
+      - dotnet build --configuration Release
+      # Publish the application
+      - echo Publishing the application...
+      - dotnet publish -c Release -o ./publish
+  post_build:
+    commands:
+      # Package application for Elastic Beanstalk
+      - echo Packaging application for Elastic Beanstalk...
+      - cd publish
+      - zip -r ../application.zip *
+      - cd ..
+      # Create Procfile if not already exists
+      - echo "Creating Procfile if not exists..."
+      - if [ ! -f "Procfile" ]; then echo "web: dotnet YourAppName.dll" > Procfile; fi
+      - cat Procfile >> application.zip
+      # Create a manifest file for Elastic Beanstalk
+      - echo Creating manifest file...
+      - echo '{"manifestVersion":1,"deployments":{"aspNetCoreWeb":[{"name":"app","parameters":{"appBundle":"application.zip","iisPath":"/","iisWebSite":"Default Web Site"}}]}}' > aws-windows-deployment-manifest.json
+      - zip -r application.zip aws-windows-deployment-manifest.json
+      # Print completion message
+      - echo Build completed on `date`
 
 artifacts:
   files:
-    - '**/bin/Release/**/*'
-  base-directory: .
+    - application.zip
+    - aws-windows-deployment-manifest.json
+    - appspec.yml
+    - scripts/**/*
+    - .ebextensions/**/*
+  discard-paths: no
+
+cache:
+  paths:
+    - '/root/.nuget/**/*'
