@@ -3,18 +3,18 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "🔧 Installing .NET 9 SDK..."
+      - echo "🔧 Installing .NET 9 SDK (latest preview)..."
       - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.100-preview.3
+      - ./dotnet-install.sh --version 9.0.100-preview.4
       - export DOTNET_ROOT=$HOME/.dotnet
       - export PATH=$DOTNET_ROOT:$PATH
-      - dotnet --version
+      - dotnet --info
 
   build:
     commands:
       - echo "🚀 Building the .NET project..."
-      - dotnet build Back-HR.sln --configuration Release
+      - dotnet build YourProject.sln --configuration Release
 
 artifacts:
   files:
