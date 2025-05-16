@@ -8,28 +8,45 @@ phases:
       - echo "Installing .NET 9.0.102..."
       - wget https://dot.net/v1/dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.102 --install-dir /root/.dotnet
-      - export PATH=/root/.dotnet:$PATH
-      - export DOTNET_ROOT=/root/.dotnet
+      - ./dotnet-install.sh --version 9.0.102 --install-dir $HOME/.dotnet
+      - export PATH=$HOME/.dotnet:$PATH
+      - export DOTNET_ROOT=$HOME/.dotnet
       - dotnet --version
+  
+  pre_build:
+    commands:
+      - echo "Restoring dependencies..."
+      - dotnet restore
   
   build:
     commands:
-      - echo "Running dotnet restore..."
-      - dotnet restore
-      - echo "Running dotnet publish..."
-      - dotnet publish -c Release -o publish
+      - echo "Building and publishing application..."
+      - dotnet publish -c Release -o ./publish
+  
+  post_build:
+    commands:
+      - echo "Creating deployment package..."
       - cd publish
       - zip -r ../deployment.zip .
       - cd ..
-      - echo "Deployment package created successfully"
+      - echo "Setting up Elastic Beanstalk configuration..."
+      # Create Elastic Beanstalk configuration files
+      - mkdir -p .ebextensions
+      - echo '{"option_settings":{"aws:elasticbeanstalk:container:dotnet:apppool":"v4.0"}}' > .ebextensions/01-settings.config
+      - zip -r deployment.zip .ebextensions/
+      # Create Procfile for Elastic Beanstalk
+      - echo "web: dotnet backHrManagement.dll" > Procfile
+      - zip -r deployment.zip Procfile
+      - echo "Deployment package created successfully at $(date)"
 
 artifacts:
   files:
     - deployment.zip
+    - appspec.yml
   discard-paths: no
+  base-directory: '.'
 
 cache:
   paths:
-    - '/root/.dotnet/**/*'
-    - '/root/.nuget/**/*'
+    - '$HOME/.dotnet/**/*'
+    - '$HOME/.nuget/**/*'
