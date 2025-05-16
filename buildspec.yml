@@ -2,14 +2,19 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 6.0
+    commands:
+      - echo "Installing .NET 9 SDK..."
+      - curl -SL https://dotnetcli.azureedge.net/dotnet/Sdk/9.0.100-preview.3/dotnet-sdk-9.0.100-preview.3-linux-x64.tar.gz -o dotnet-sdk.tar.gz
+      - mkdir -p $HOME/dotnet
+      - tar -zxf dotnet-sdk.tar.gz -C $HOME/dotnet
+      - export DOTNET_ROOT=$HOME/dotnet
+      - export PATH=$DOTNET_ROOT:$PATH
+      - dotnet --version
   build:
     commands:
       - echo "Running dotnet publish..."
       - dotnet publish -c Release -o publish
-      - cd publish
-      - zip -r ../deployment.zip .
 artifacts:
   files:
-    - deployment.zip
+    - publish/**/*
+
