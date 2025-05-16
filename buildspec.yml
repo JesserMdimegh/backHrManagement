@@ -2,49 +2,21 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 8.0
     commands:
-      - echo "Installing .NET 9.0.102..."
-      - wget https://dot.net/v1/dotnet-install.sh
+      - echo "🔧 Installing .NET 9 SDK (latest preview)..."
+      - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.102 --install-dir $HOME/.dotnet
-      - export PATH=$HOME/.dotnet:$PATH
+      - ./dotnet-install.sh --version 9.0.100-preview.4
       - export DOTNET_ROOT=$HOME/.dotnet
-      - dotnet --version
-  
-  pre_build:
-    commands:
-      - echo "Restoring dependencies..."
-      - dotnet restore
-  
+      - export PATH=$DOTNET_ROOT:$PATH
+      - dotnet --info
+
   build:
     commands:
-      - echo "Building and publishing application..."
-      - dotnet publish -c Release -o ./publish
-  
-  post_build:
-    commands:
-      - echo "Creating deployment package..."
-      - cd publish
-      - zip -r ../deployment.zip .
-      - cd ..
-      - echo "Setting up Elastic Beanstalk configuration..."
-      - mkdir -p .ebextensions
-      - echo '{"option_settings":{"aws:elasticbeanstalk:container:dotnet:apppool":"v4.0"}}' > .ebextensions/01-settings.config
-      - zip -r deployment.zip .ebextensions/
-      - echo "web: dotnet back-HR.dll" > Procfile
-      - zip -r deployment.zip Procfile
-      - echo "Deployment package created successfully at $(date)"
+      - echo "🚀 Building the .NET project..."
+      - dotnet build YourProject.sln --configuration Release
 
 artifacts:
   files:
-    - deployment.zip
-    - appspec.yml
-  discard-paths: no
-  base-directory: '.'
-
-cache:
-  paths:
-    - '$HOME/.dotnet/**/*'
-    - '$HOME/.nuget/**/*'
+    - '**/bin/Release/**/*'
+  base-directory: .
