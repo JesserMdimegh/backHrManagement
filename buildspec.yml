@@ -30,12 +30,10 @@ phases:
       - zip -r ../deployment.zip .
       - cd ..
       - echo "Setting up Elastic Beanstalk configuration..."
-      # Create Elastic Beanstalk configuration files
       - mkdir -p .ebextensions
       - echo '{"option_settings":{"aws:elasticbeanstalk:container:dotnet:apppool":"v4.0"}}' > .ebextensions/01-settings.config
       - zip -r deployment.zip .ebextensions/
-      # Create Procfile for Elastic Beanstalk
-      - echo "web: dotnet backHrManagement.dll" > Procfile
+      - echo "web: dotnet back-HR.dll" > Procfile
       - zip -r deployment.zip Procfile
       - echo "Deployment package created successfully at $(date)"
 
