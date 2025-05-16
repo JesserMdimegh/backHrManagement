@@ -1,4 +1,4 @@
-ersion: 0.2
+version: 0.2
 
 phases:
   install:
@@ -14,6 +14,7 @@ phases:
       # Run tests if you have any
       - echo Running tests...
       - dotnet test --configuration Release
+
   build:
     commands:
       # Build the application
@@ -22,6 +23,7 @@ phases:
       # Publish the application
       - echo Publishing the application...
       - dotnet publish -c Release -o ./publish
+
   post_build:
     commands:
       # Package application for Elastic Beanstalk
