@@ -3,16 +3,11 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 6
+      dotnet: 6.0
   build:
     commands:
-      - echo "Restoring packages..."
-      - dotnet restore
-      - echo "Building solution..."
-      - dotnet build -c Release
-      - echo "Publishing project..."
+      - echo "Running dotnet publish..."
       - dotnet publish -c Release -o publish
-      - echo "Zipping published output..."
       - cd publish
       - zip -r ../deployment.zip .
 artifacts:
