@@ -2,8 +2,6 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      # Not needed for .NET because we install it manually
     commands:
       - echo "🔧 Installing .NET 9 SDK..."
       - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
