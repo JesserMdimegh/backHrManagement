@@ -3,44 +3,33 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 6.0
+      dotnet: 8.0
     commands:
-      - echo Installing dependencies...
-      - dotnet restore
-
-  pre_build:
-    commands:
-      - echo Starting pre-build phase...
+      - echo "Installing .NET 9.0.102..."
+      - wget https://dot.net/v1/dotnet-install.sh
+      - chmod +x dotnet-install.sh
+      - ./dotnet-install.sh --version 9.0.102 --install-dir /root/.dotnet
+      - export PATH=/root/.dotnet:$PATH
+      - export DOTNET_ROOT=/root/.dotnet
       - dotnet --version
-
+  
   build:
     commands:
-      - echo Building the application...
-      - dotnet build --configuration Release
-      - echo Publishing the application...
-      - dotnet publish -c Release -o ./publish
-
-  post_build:
-    commands:
-      - echo Packaging application for Elastic Beanstalk...
+      - echo "Running dotnet restore..."
+      - dotnet restore
+      - echo "Running dotnet publish..."
+      - dotnet publish -c Release -o publish
       - cd publish
-      - zip -r ../deployment.zip *
+      - zip -r ../deployment.zip .
       - cd ..
-      - echo "Creating Procfile if not exists..."
-      - echo "web: dotnet backHrManagement.dll" > Procfile
-      - zip -r deployment.zip Procfile
-      - echo Creating manifest file...
-      - echo '{"manifestVersion":1,"deployments":{"aspNetCoreWeb":[{"name":"app","parameters":{"appBundle":"deployment.zip","iisPath":"/","iisWebSite":"Default Web Site"}}]}}' > aws-windows-deployment-manifest.json
-      - zip -r deployment.zip aws-windows-deployment-manifest.json
-      - echo Build completed on `date`
+      - echo "Deployment package created successfully"
 
 artifacts:
   files:
     - deployment.zip
-    - aws-windows-deployment-manifest.json
-  base-directory: '.'
   discard-paths: no
 
 cache:
   paths:
+    - '/root/.dotnet/**/*'
     - '/root/.nuget/**/*'
