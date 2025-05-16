@@ -2,19 +2,23 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      # Not needed for .NET because we install it manually
     commands:
-      - echo "Installing .NET 9 SDK..."
-      - curl -SL https://dotnetcli.azureedge.net/dotnet/Sdk/9.0.100-preview.3/dotnet-sdk-9.0.100-preview.3-linux-x64.tar.gz -o dotnet-sdk.tar.gz
-      - mkdir -p $HOME/dotnet
-      - tar -zxf dotnet-sdk.tar.gz -C $HOME/dotnet
-      - export DOTNET_ROOT=$HOME/dotnet
+      - echo "🔧 Installing .NET 9 SDK..."
+      - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+      - chmod +x dotnet-install.sh
+      - ./dotnet-install.sh --version 9.0.100-preview.3
+      - export DOTNET_ROOT=$HOME/.dotnet
       - export PATH=$DOTNET_ROOT:$PATH
       - dotnet --version
+
   build:
     commands:
-      - echo "Running dotnet publish..."
-      - dotnet publish -c Release -o publish
+      - echo "🚀 Building the .NET project..."
+      - dotnet build Back-HR.sln --configuration Release
+
 artifacts:
   files:
-    - publish/**/*
-
+    - '**/bin/Release/**/*'
+  base-directory: .
