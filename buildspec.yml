@@ -2,14 +2,15 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      dotnet: 9.0
     commands:
-      - echo "🔧 Installing .NET 9 SDK (latest preview)..."
+      - echo "🔧 Installation du SDK .NET 9 RC2..."
       - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.100-preview.4
+      - ./dotnet-install.sh --version 9.0.100-rc.2.24474.11
       - export DOTNET_ROOT=$HOME/.dotnet
       - export PATH=$DOTNET_ROOT:$PATH
-      - dotnet --info
 
   build:
     commands:
